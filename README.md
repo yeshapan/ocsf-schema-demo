@@ -4,11 +4,12 @@ In most security stacks, identity logs, network traffic and endpoint events are 
 In this project, we'll map a slice of [OCSF (Open Cybersecurity Schema Framework)](https://schema.ocsf.io/) into a graph using PuppyGraph, directly over the raw event tables (zero ETL).
 
 The purpose of this work is to show that treating security telemetry as a connected graph makes investigation simpler and more natural than working with isolated event records and multi-table joins.
+
 ---
 
 ### **Examples of Analytical Use-Cases (Cypher Queries)**
 
-1. **Blast Radius**
+#### 1. **Blast Radius**
 Ques: Find the attack chain where a non-admin user login is followed by the execution of malicious tools (e.g., Mimikatz) that subsequently access critical resources.
 
 Query to obtain a list of attack chain objects:
@@ -42,7 +43,7 @@ RETURN u, auth, d, run, p, acc, r
     *  requires joining Endpoint Logs, User and Device Tables and Data Access Logs 
     * then filtering by a calculated time-delta between two massive event tables
 
-2. **Lateral MOvement Analysis**
+#### 2. **Lateral MOvement Analysis**
 Ques: Trace a "Kill Chain" where a compromised device moves laterally via network flow to a victim server; which subsequently accesses a critical resource.
 
 Query to give a list of potential lateral movement kill chains:
@@ -74,7 +75,7 @@ LIMIT 20
     * Modeling the `Device A → Device B → Resource` hop requires complex Self-Joins or Recursive CTEs, which are notoriously difficult to write and scale
     * Correlating massive Network Flow tables with Access Logs based on time inequality `Flow_Time < Access_Time` prevents the database from using standard Hash Joins; often forcing slow full-table scans.
 
-3. **Priviledge Escalation Detection**
+#### 3. **Priviledge Escalation Detection**
 Ques: Identify any Non-Admin user who attempted to escalate their privileges to 'Admin' level on a device (specifically highlighting successful attempts)
 
 ```cypher
